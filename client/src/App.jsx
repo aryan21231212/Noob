@@ -14,7 +14,7 @@ const App = () => {
   const isNoLayoutRoute = noLayoutRoutes.includes(location.pathname);
 
   return (
-    <div className="sm:-8 bg-[#13131a] flex flex-row">
+    <div className="relative sm:-8 p-4 bg-[#13131a] min-h-screen flex flex-row">
       {!isNoLayoutRoute && (
         <div className="sm:flex hidden mr-10 relative">
           <Sidebar />
