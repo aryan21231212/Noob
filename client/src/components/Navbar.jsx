@@ -8,12 +8,14 @@ import { logo, menu, search, thirdweb } from '../assets';
 import { navlinks } from '../constants';
 import Connectbutton from './Connectbutton';
 
+
 const client = createThirdwebClient({ clientId : "07baf930ed674143787a0996a7bd15d7"});
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [isActive, setIsActive] = useState('dashboard');
   const [toggleDrawer, setToggleDrawer] = useState(false);
+  const { disconnectWallet } = useStateContext();
 
   // 🔹 Added search state
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,6 +30,11 @@ const Navbar = () => {
     } catch (error) {
       console.error("Error connecting wallet:", error);
     }
+  };
+
+    const handleLogout = () => {
+    disconnectWallet();
+    window.location.reload(); // Reset UI and address
   };
 
   // 🔹 Live Search Handler
@@ -55,10 +62,10 @@ const Navbar = () => {
         {address?
         <CustomButton 
           btnType="button"
-          title={address ? 'Create a charity' : 'Connect'}
+          title={address ? 'Disconnect' : 'Connect'}
           styles={address ? 'bg-[#1dc071]' : 'bg-[#8c6dfd]'}
           handleClick={() => {
-            if(address) navigate('create-campaign')
+            if(address) handleLogout()
             else handleConnect()
           }}
         />:<Connectbutton />}
@@ -113,7 +120,7 @@ const Navbar = () => {
                 title={address ? 'Create a campaign' : 'Connect'}
                 styles={address ? 'bg-[#1dc071]' : 'bg-[#8c6dfd]'}
                 handleClick={() => {
-                  if(address) navigate('create-campaign')
+                  if(address) handleLogout()
                   else handleConnect()
                 }}
               />
