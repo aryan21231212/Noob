@@ -22,19 +22,27 @@ const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h1 className="font-epilogue font-semibold text-[18px] text-white text-left">
+        <h1 className="font-epilogue font-semibold text-[24px] text-white text-left">
           {title} ({filteredCampaigns.length})
         </h1>
 
-        {/* ✅ Search input */}
-        
-        <input
-          type="text"
-          placeholder="Search campaigns..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="lg:flex-1 flex flex-row max-w-[458px] py-2 pl-4 pr-2 h-[52px] bg-[#1c1c24] rounded-[100px]"
-        />
+        {/* ✅ Search input with icon */}
+        <div className="relative w-full max-w-[458px]">
+          <input
+            type="text"
+            placeholder="Search campaigns..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full py-3 pl-12 pr-4 h-[52px] bg-[#1c1c24] rounded-full text-white font-medium focus:outline-none focus:ring-2 focus:ring-[#1dc071] shadow-md placeholder:text-[#818183] transition-all duration-200"
+          />
+          <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#1dc071]">
+            {/* Search Icon SVG */}
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <circle cx="11" cy="11" r="7" strokeWidth="2" stroke="currentColor" fill="none" />
+              <line x1="16.5" y1="16.5" x2="21" y2="21" strokeWidth="2" stroke="currentColor" strokeLinecap="round" />
+            </svg>
+          </span>
+        </div>
       </div>
 
       <div className="flex flex-wrap mt-[20px] gap-[26px]">
