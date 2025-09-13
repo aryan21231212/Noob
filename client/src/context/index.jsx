@@ -5,19 +5,16 @@ import { ethers } from "ethers";
 const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
-
   const { contract } = useContract("0xe7BcA3267Abe9Db6d4a841a5f7FB802bB0dcb50E");
 
-
   const address = useAddress();
-
 
   const { mutateAsync: createCampaign } = useContractWrite(
     contract,
     "createCampaign"
   );
 
-
+  // publish campaign
   const publishCampaign = async (form) => {
     try {
       if (!contract) throw new Error("Contract object is undefined");
@@ -25,10 +22,10 @@ export const StateContextProvider = ({ children }) => {
 
       const data = await createCampaign({
         args: [
-          address, // owner → now from wallet
+          address, // owner → from wallet
           form.title,
           form.description,
-          ethers.utils.parseEther(form.target.toString()), // parse target
+          ethers.utils.parseEther(form.target.toString()), // target
           new Date(form.deadline).getTime(),
           form.image,
         ],
@@ -50,7 +47,9 @@ export const StateContextProvider = ({ children }) => {
       description: campaign.description,
       target: ethers.utils.formatEther(campaign.target.toString()),
       deadline: campaign.deadline.toNumber(),
-      amountCollected: ethers.utils.formatEther(campaign.amountCollected.toString()),
+      amountCollected: ethers.utils.formatEther(
+        campaign.amountCollected.toString()
+      ),
       image: campaign.image,
       pId: i,
     }));
@@ -62,7 +61,7 @@ export const StateContextProvider = ({ children }) => {
     return allCampaigns.filter((campaign) => campaign.owner === address);
   };
 
-  // donate
+  // donate to campaign
   const donate = async (pId, amount) => {
     const data = await contract.call("donateToCampaign", [pId], {
       value: ethers.utils.parseEther(amount),
@@ -70,13 +69,33 @@ export const StateContextProvider = ({ children }) => {
     return data;
   };
 
-  // get donations of a campaign
+  // get donations of a specific campaign
   const getDonations = async (pId) => {
     const donations = await contract.call("getDonators", [pId]);
     return donations[0].map((donator, i) => ({
       donator,
       donation: ethers.utils.formatEther(donations[1][i].toString()),
     }));
+  };
+
+  // ✅ get all donations made by current user
+  const getUserDonations = async () => {
+    const allCampaigns = await getCampaigns();
+    const userDonations = [];
+
+    for (let campaign of allCampaigns) {
+      const donations = await getDonations(campaign.pId);
+      donations.forEach((don) => {
+        if (don.donator.toLowerCase() === address?.toLowerCase()) {
+          userDonations.push({
+            ...campaign,
+            donatedAmount: don.donation,
+          });
+        }
+      });
+    }
+
+    return userDonations;
   };
 
   return (
@@ -89,6 +108,7 @@ export const StateContextProvider = ({ children }) => {
         getUserCampaigns,
         donate,
         getDonations,
+        getUserDonations, // ✅ added in context
       }}
     >
       {children}
