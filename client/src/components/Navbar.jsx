@@ -14,7 +14,13 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [isActive, setIsActive] = useState('dashboard');
   const [toggleDrawer, setToggleDrawer] = useState(false);
-  const {address, connectWallet } = useStateContext();
+
+  // 🔹 Added search state
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // 🔹 Using context
+  const { address, connectWallet, campaigns, setFilteredCampaigns } = useStateContext();
+
   const handleConnect = async () => {
     try {
       await connectWallet("injected");
@@ -23,12 +29,37 @@ const Navbar = () => {
       console.error("Error connecting wallet:", error);
     }
   };
+
+  // 🔹 Live Search Handler
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    if (!query.trim()) {
+      setFilteredCampaigns(campaigns); // reset if empty
+      return;
+    }
+    const filtered = campaigns.filter((c) =>
+      c.title.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredCampaigns(filtered);
+    navigate("/"); // redirect to dashboard
+  };
+
   return (
     <div className="flex md:flex-row flex-col-reverse justify-between mb-[35px] gap-6">
+      {/* 🔹 Search Box */}
       <div className="lg:flex-1 flex flex-row max-w-[458px] py-2 pl-4 pr-2 h-[52px] bg-[#1c1c24] rounded-[100px]">
-        <input type="text" placeholder="Search for campaigns" className="flex w-full font-epilogue font-normal text-[14px] placeholder:text-[#4b5264] text-white bg-transparent outline-none" />
+        <input 
+          type="text" 
+          value={searchQuery}
+          onChange={(e) => handleSearch(e.target.value)} // 🔹 Live Search
+          placeholder="Search for campaigns" 
+          className="flex w-full font-epilogue font-normal text-[14px] placeholder:text-[#4b5264] text-white bg-transparent outline-none" 
+        />
         
-        <div className="w-[72px] h-full rounded-[20px] bg-[#4acd8d] flex justify-center items-center cursor-pointer">
+        <div 
+          className="w-[72px] h-full rounded-[20px] bg-[#4acd8d] flex justify-center items-center cursor-pointer"
+          onClick={() => handleSearch(searchQuery)} // 🔹 Optional button click
+        >
           <img src={search} alt="search" className="w-[15px] h-[15px] object-contain"/>
         </div>
       </div>
@@ -55,7 +86,7 @@ const Navbar = () => {
       </div>
 
       {/* Small screen navigation */}
-        <div className="sm:hidden flex justify-between items-center relative">
+      <div className="sm:hidden flex justify-between items-center relative">
         <div className="w-[40px] h-[40px] rounded-[10px] bg-[#2c2f32] flex justify-center items-center cursor-pointer">
             <img src={logo} alt="user" className="w-[60%] h-[60%] object-contain" />
           </div>
@@ -92,15 +123,15 @@ const Navbar = () => {
             </ul>
 
             <div className="flex mx-4">
-            <CustomButton 
-              btnType="button"
-              title={address ? 'Create a campaign' : 'Connect'}
-              styles={address ? 'bg-[#1dc071]' : 'bg-[#8c6dfd]'}
-              handleClick={() => {
-                if(address) navigate('create-campaign')
-                else handleConnect()
-              }}
-            />
+              <CustomButton 
+                btnType="button"
+                title={address ? 'Create a campaign' : 'Connect'}
+                styles={address ? 'bg-[#1dc071]' : 'bg-[#8c6dfd]'}
+                handleClick={() => {
+                  if(address) navigate('create-campaign')
+                  else handleConnect()
+                }}
+              />
             </div>
           </div>
         </div>
