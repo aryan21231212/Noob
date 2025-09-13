@@ -245,7 +245,7 @@ const CampaignDetails = () => {
                   <p className="font-epilogue font-normal text-base text-[#b2b3bd] leading-6 break-all">
                     {index + 1}. {item.donator}
                   </p>
-                  <p className="font-epilogue font-normal text-base text-white leading-6 break-words font-semibold">
+                  <p className="font-epilogue font-normal text-base text-white leading-6 break-words">
                     {item.donation}
                   </p>
                 </div>
