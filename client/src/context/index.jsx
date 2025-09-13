@@ -1,18 +1,17 @@
 import React, { useContext, createContext } from "react";
-import { useAddress, useContract, useContractWrite } from "@thirdweb-dev/react";
+import { useAddress, useContract, useContractWrite, useDisconnect } from "@thirdweb-dev/react";
 import { ethers } from "ethers";
 
 const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
   const { contract } = useContract("0xe7BcA3267Abe9Db6d4a841a5f7FB802bB0dcb50E");
-
   const address = useAddress();
-
   const { mutateAsync: createCampaign } = useContractWrite(
     contract,
     "createCampaign"
   );
+  const disconnectWallet = useDisconnect();
 
   // publish campaign
   const publishCampaign = async (form) => {
@@ -108,7 +107,8 @@ export const StateContextProvider = ({ children }) => {
         getUserCampaigns,
         donate,
         getDonations,
-        getUserDonations, // ✅ added in context
+        getUserDonations,
+        disconnectWallet, // Expose disconnectWallet for logout
       }}
     >
       {children}
