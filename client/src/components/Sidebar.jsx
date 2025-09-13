@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 import { logo, sun } from '../assets';
 import { navlinks } from '../constants';
@@ -16,7 +16,11 @@ const Icon = ({ styles, name, imgUrl, isActive, disabled, handleClick }) => (
 
 const Sidebar = () => {
   const navigate = useNavigate();
-  const [isActive, setIsActive] = useState('dashboard');
+  const location = useLocation();
+
+  // Find the active link based on current pathname
+  const activeLink = navlinks.find(link => link.link === location.pathname);
+  const isActive = activeLink ? activeLink.name : '';
 
   return (
     <div className="flex justify-between items-center flex-col sticky top-5 h-[93vh]">
@@ -33,7 +37,6 @@ const Sidebar = () => {
               isActive={isActive}
               handleClick={() => {
                 if(!link.disabled) {
-                  setIsActive(link.name);
                   navigate(link.link);
                 }
               }}
