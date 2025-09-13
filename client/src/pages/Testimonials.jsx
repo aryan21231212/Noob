@@ -7,127 +7,78 @@ const Testimonials = () => {
       author: "Sarah Chen",
       role: "Executive Director",
       organization: "Global Impact Foundation",
-      imageSrc: "https://images.unsplash.com/photo-1494790108755-2616b612b1b4?w=400&h=400&fit=crop&crop=face"
     },
     {
       quote: "The platform is straightforward to use. We've seen a modest increase in recurring donations since we started showing transaction transparency.",
       author: "Marcus Rodriguez",
       role: "Founder",
       organization: "Clean Water Initiative",
-      imageSrc: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face"
     },
     {
       quote: "It took some getting used to, but the real-time reporting has been helpful for our quarterly reviews. Donors seem to trust the process more.",
       author: "Dr. Emily Watson",
       role: "Development Director",
       organization: "Education For All",
-      imageSrc: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop&crop=face"
     }
   ];
 
   const [currentTestimonial, setCurrentTestimonial] = React.useState(0);
-
-  const nextTestimonial = () => {
-    setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
-  };
-
-  const prevTestimonial = () => {
-    setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  };
-
   const current = testimonials[currentTestimonial];
 
   return (
-    <section className="min-h-screen bg-[#ea638c] flex items-center justify-center px-6 py-12">
-      <div className="max-w-4xl w-full">
-        {/* Simple header */}
-        <div className="text-center mb-12">
-          <h2 className="text-5xl md:text-5xl font-medium text-white mb-4">
-            What people are saying
+    <section className="relative min-h-screen bg-black text-white flex items-center justify-center px-6 py-24 overflow-hidden">
+      {/* Background Aurora Shapes */}
+      <div className="absolute top-0 left-0 w-full h-full opacity-40">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#ea638c] rounded-full mix-blend-screen filter blur-3xl animate-blob"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#98465f] rounded-full mix-blend-screen filter blur-3xl animate-blob animation-delay-2000"></div>
+      </div>
+
+      <div className="max-w-4xl w-full text-center relative z-10">
+        {/* Header */}
+        <div className="mb-16">
+          <h2 className="text-5xl md:text-6xl font-bold tracking-tighter text-white mb-4">
+            Trusted by Innovators
           </h2>
-          <p className="text-lg text-black">
-            Real feedback from organizations using our platform
+          <p className="text-lg text-gray-400">
+            Real feedback from organizations making a difference.
           </p>
         </div>
 
-        {/* Main testimonial card */}
-        <div className="bg-white rounded-lg shadow-sm p-8 md:p-12 mb-8">
-          <div className="max-w-3xl mx-auto">
-            {/* Quote */}
-            <blockquote className="text-xl md:text-2xl leading-relaxed text-gray-800 mb-8 font-normal">
-              "{current.quote}"
+        {/* Main Testimonial Card */}
+        <div className="relative bg-white/5 border border-white/10 rounded-3xl shadow-2xl backdrop-blur-lg p-8 md:p-12 min-h-[300px] flex flex-col justify-center">
+          {/* Decorative Quote Icon */}
+          <span className="absolute top-0 left-0 -translate-x-4 -translate-y-4 text-9xl font-serif text-white/10">
+            “
+          </span>
+
+          {/* Animated Content Wrapper */}
+          <div key={currentTestimonial} className="animate-fade-in">
+            <blockquote className="text-xl md:text-2xl leading-relaxed text-gray-200 mb-6 font-light">
+              {current.quote}
             </blockquote>
-            
-            {/* Author info */}
-            <div className="flex items-center">
-              <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 mr-4 flex-shrink-0">
-                <img 
-                  src={current.imageSrc} 
-                  alt={current.author}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                    e.target.nextElementSibling.style.display = 'flex';
-                  }}
-                />
-                <div className="w-full h-full bg-gray-300 hidden items-center justify-center text-gray-600 font-medium text-sm">
-                  {current.author.split(' ').map(n => n[0]).join('')}
-                </div>
-              </div>
-              
-              <div>
-                <div className="font-medium text-gray-900">{current.author}</div>
-                <div className="text-gray-600 text-sm">{current.role}</div>
-                <div className="text-gray-500 text-sm">{current.organization}</div>
-              </div>
+            <div className="mt-8">
+              <div className="font-semibold text-white text-lg">{current.author}</div>
+              <div className="text-[#ea638c] text-sm">{`${current.role}, ${current.organization}`}</div>
             </div>
           </div>
         </div>
 
-        {/* Simple navigation */}
-        <div className="flex justify-center items-center space-x-4">
-          <button 
-            onClick={prevTestimonial}
-            className="w-10 h-10 rounded-full bg-white bg-opacity-50 hover:bg-opacity-75 transition-all duration-200 flex items-center justify-center"
-            aria-label="Previous testimonial"
-          >
-            <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-
-          {/* Simple dots */}
-          <div className="flex space-x-2">
-            {testimonials.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentTestimonial(index)}
-                className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                  index === currentTestimonial 
-                    ? 'bg-gray-800' 
-                    : 'bg-white bg-opacity-50 hover:bg-opacity-75'
-                }`}
-                aria-label={`Go to testimonial ${index + 1}`}
-              />
-            ))}
-          </div>
-
-          <button 
-            onClick={nextTestimonial}
-            className="w-10 h-10 rounded-full bg-white bg-opacity-50 hover:bg-opacity-75 transition-all duration-200 flex items-center justify-center"
-            aria-label="Next testimonial"
-          >
-            <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Subtle footer note */}
-        <div className="text-center mt-8">
-          <p className="text-sm text-gray-700 opacity-75">
-            {currentTestimonial + 1} of {testimonials.length}
-          </p>
+        {/* Interactive Organization Navigation */}
+        <div className="flex justify-center items-center flex-wrap gap-4 mt-12">
+          {testimonials.map((person, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentTestimonial(index)}
+              className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ease-in-out focus:outline-none transform hover:-translate-y-1 ${
+                index === currentTestimonial
+                  ? 'bg-[#ea638c] text-white shadow-lg shadow-[#ea638c]/50'
+                  : 'bg-white/10 text-gray-400 hover:bg-white/20 hover:text-white'
+              }`}
+              aria-label={`View testimonial from ${person.organization}`}
+            >
+              {person.organization}
+            </button>
+          ))}
         </div>
       </div>
     </section>

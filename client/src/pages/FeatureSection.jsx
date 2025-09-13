@@ -21,11 +21,6 @@ const ChartIcon = (props) => (
     </svg>
 );
 
-
-
-
-
-
 const FeaturesSection = () => {
   const features = [
     {
@@ -53,34 +48,40 @@ const FeaturesSection = () => {
       <div className="mx-auto max-w-7xl px-6 lg:px-8 relative z-10">
         {/* Main Text Content */}
         <div className="max-w-3xl mx-auto text-center">
-          <p className="font-semibold text-[#ff66c4] uppercase tracking-wider">Why Heart Chain</p>
+          <p className="font-semibold text-[#ea638c] uppercase tracking-wider">Why Heart Chain</p>
           <h2 className="mt-4 text-4xl sm:text-6xl font-bold tracking-tighter text-white">
             Software that helps
-            <span 
+            <span
               className="block mt-2 bg-gradient-to-r from-white to-gray-400 text-transparent bg-clip-text"
             >
               you connect transparently.
             </span>
           </h2>
           <p className="mt-6 text-lg text-gray-400">
-            Our platform empowers you to exceed your fundraising goals by focusing on direct payments via your wallets.
+            Our platform empowers you to exceed your fundraising goals by focusing on direct payments via your crypto wallets.
           </p>
           <div className="mt-10">
-            <button className="bg-white text-black px-8 py-3 rounded-full font-semibold hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-white/10">
+            {/* --- MODIFIED BUTTON --- */}
+            <a
+              href="#"
+              className="inline-block bg-white text-black px-8 py-3 rounded-full font-semibold transition-all duration-300 ease-in-out transform hover:scale-105 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#ea638c]/40"
+            >
               Take a Tour
-            </button>
+            </a>
           </div>
         </div>
 
         {/* Feature Cards Grid */}
         <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8">
           {features.map((feature) => (
-            <div 
-              key={feature.title} 
-              className="bg-white/5 border border-white/10 rounded-3xl p-8 backdrop-blur-lg group transition-all duration-300 hover:bg-white/10 hover:border-white/20 hover:-translate-y-2"
+            // --- MODIFIED CARD ---
+            <div
+              key={feature.title}
+              className="bg-white/5 border border-white/10 rounded-3xl p-8 backdrop-blur-lg group transition-all duration-300 ease-in-out hover:bg-white/10 hover:border-white/20 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#ea638c]/20"
             >
-              <div className="bg-white/10 rounded-xl w-14 h-14 flex items-center justify-center border border-white/10 group-hover:bg-[#ff66c4] group-hover:border-[#ff66c4] transition-all duration-300">
-                <feature.Icon className="text-white h-7 w-7 transition-all duration-300" />
+              <div className="bg-white/10 rounded-xl w-14 h-14 flex items-center justify-center border border-white/10 group-hover:bg-[#ea638c] group-hover:border-[#ff66c4] transition-all duration-300 ease-in-out">
+                {/* --- MODIFIED ICON --- */}
+                <feature.Icon className="text-white h-7 w-7 transition-all duration-300 ease-in-out transform group-hover:scale-110 group-hover:rotate-6" />
               </div>
               <h3 className="mt-6 text-2xl font-semibold text-white">{feature.title}</h3>
               <p className="mt-2 text-base text-gray-400">{feature.description}</p>
