@@ -88,19 +88,19 @@ const HeroSection = () => {
               </p>
               <div className="mt-10 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                 {/* --- MODIFIED BUTTON --- */}
-                <a
-                  href="/create-campaign"
+                <Link
+                  to="/create-campaign"
                   className="inline-block bg-white text-black px-8 py-3 rounded-full font-semibold w-full sm:w-auto transition-all duration-300 ease-in-out transform hover:scale-105 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#ea638c]/40"
                 >
                   REGISTER YOUR CAMPAIGN
-                </a>
+                </Link>
                 {/* --- MODIFIED BUTTON --- */}
-                <a
-                  href="/"
+                <Link
+                  to="/how-it-works"
                   className="inline-block border border-gray-700 text-white px-8 py-3 rounded-full font-semibold w-full sm:w-auto transition-all duration-300 ease-in-out transform hover:bg-white/10 hover:border-white hover:-translate-y-1 hover:shadow-lg hover:shadow-white/10"
                 >
-                  TOUR THE PLATFORM
-                </a>
+                  HOW IT WORKS
+                </Link>
               </div>
             </div>
 

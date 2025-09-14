@@ -42,6 +42,14 @@ const HeroNavbar = () => {
         <Link to="/create-campaign" className="text-gray-400 hover:text-white transition-colors duration-300 text-lg font-medium">
           Create Campaign
         </Link>
+        <Link to="https://github.com/aryan21231212/Noob" className="text-gray-400 hover:text-white transition-colors duration-300 text-lg font-medium">
+          Documentation
+        </Link>
+        <Link to="/about" className="text-gray-400 hover:text-white transition-colors duration-300 text-lg font-medium">
+          About Us
+        </Link>
+        
+
       </nav>
       {/* Action buttons */}
   <div className="flex items-center space-x-4">
