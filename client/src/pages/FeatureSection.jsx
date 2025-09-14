@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const UsersIcon = (props) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
     <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
@@ -63,7 +65,7 @@ const FeaturesSection = () => {
           <div className="mt-10">
             {/* --- MODIFIED BUTTON --- */}
             <a
-              href="#"
+              href="/how-it-works"
               className="inline-block bg-white text-black px-8 py-3 rounded-full font-semibold transition-all duration-300 ease-in-out transform hover:scale-105 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#ea638c]/40"
             >
               Take a Tour
