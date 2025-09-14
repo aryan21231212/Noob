@@ -27,30 +27,42 @@ const HeroNavbar = () => {
   };
 
   return (
-  <header className="flex justify-between items-center py-5 px-6 md:px-12 border-b border-gray-800/50 backdrop-blur-sm sticky top-0 z-20 bg-black/70 rounded-3xl">
+    <header className="flex justify-between items-center py-5 px-6 md:px-12 border-b border-gray-800/50 backdrop-blur-sm sticky top-0 z-20 rounded-3xl">
+      {/* Brand Logo */}
       <div className="flex items-center gap-3">
         <img src={brandLogo} alt="HeartChain Logo" className="h-14 w-auto" />
       </div>
-      {/* Desktop Navigation: Only Dashboard and Create Campaign */}
+
+      {/* Desktop Navigation */}
       <nav className="hidden md:flex items-center space-x-8">
-        <Link to="/campaigns" className="text-gray-400 hover:text-white transition-colors duration-300 text-lg font-medium">
+        <Link
+          to="/campaigns"
+          className="text-gray-400 hover:text-white transition-colors duration-300 text-lg font-medium"
+        >
           Campaign
         </Link>
-        <Link to="/create-campaign" className="text-gray-400 hover:text-white transition-colors duration-300 text-lg font-medium">
+        <Link
+          to="/create-campaign"
+          className="text-gray-400 hover:text-white transition-colors duration-300 text-lg font-medium"
+        >
           Create Campaign
         </Link>
+        <Link
+          to="/dashboard"
+          className="text-gray-400 hover:text-white transition-colors duration-300 text-lg font-medium"
+        >
+          Dashboard
+        </Link>
       </nav>
-      {/* Action buttons */}
-  <div className="flex items-center space-x-4">
+
+      {/* Action Buttons */}
+      <div className="flex items-center space-x-4">
         {address ? (
           <CustomButton
             btnType="button"
-            title={address ? "Disconnect" : "Connect"}
-            styles={address ? "bg-[#1dc071]" : "bg-[#8c6dfd]"}
-            handleClick={() => {
-              if (address) handleLogout();
-              else handleConnect();
-            }}
+            title="Disconnect"
+            styles="bg-[#1dc071]"
+            handleClick={handleLogout}
           />
         ) : (
           <Connectbutton />
@@ -58,49 +70,97 @@ const HeroNavbar = () => {
 
         <Link to="/profile">
           <div className="w-[52px] h-[52px] rounded-full bg-[#2c2f32] flex justify-center items-center cursor-pointer">
-            <img src={thirdweb} alt="user" className="w-[60%] h-[60%] object-contain" />
+            <img
+              src={thirdweb}
+              alt="user"
+              className="w-[60%] h-[60%] object-contain"
+            />
           </div>
         </Link>
       </div>
 
-      {/* Small screen navigation */}
-      <div className="sm:hidden flex justify-between items-center relative">
-        <div className="w-[40px] h-[40px] rounded-[10px] bg-[#2c2f32] flex justify-center items-center cursor-pointer">
-          <img src={logo} alt="user" className="w-[60%] h-[60%] object-contain" />
-        </div>
+      {/* Mobile Drawer */}
+      <div className="sm:hidden flex items-center relative">
+        <button
+          className="w-10 h-10 flex flex-col justify-center items-center cursor-pointer focus:outline-none"
+          aria-label="Open menu"
+          onClick={() => setToggleDrawer(true)}
+        >
+          <span className="block w-8 h-1 bg-white rounded mb-2"></span>
+          <span className="block w-8 h-1 bg-white rounded mb-2"></span>
+          <span className="block w-8 h-1 bg-white rounded"></span>
+        </button>
 
-        <img src={menu} alt="menu" className="w-[34px] h-[34px] object-contain cursor-pointer" onClick={() => setToggleDrawer((prev) => !prev)} />
+        {toggleDrawer && (
+          <>
+            {/* Overlay with opacity fix */}
+            <div
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+              onClick={() => setToggleDrawer(false)}
+            ></div>
 
-        <div className={`absolute top-[60px] right-0 left-0 bg-[#1c1c24] z-10 shadow-secondary py-4 ${!toggleDrawer ? "-translate-y-[100vh]" : "translate-y-0"} transition-all duration-700`}>
-          <ul className="mb-4">
-            {navlinks.map((link) => (
-              <li key={link.name} className={`flex p-4 ${isActive === link.name && "bg-[#3a3a43]"}`} onClick={() => {
-                setIsActive(link.name);
-                setToggleDrawer(false);
-                navigate(link.link);
-              }}>
-                <img src={link.imgUrl} alt={link.name} className={`w-[24px] h-[24px] object-contain ${isActive === link.name ? "grayscale-0" : "grayscale"}`} />
-                <p className={`ml-[20px] font-epilogue font-semibold text-[14px] ${isActive === link.name ? "text-[#1dc071]" : "text-[#808191]"}`}>{link.name}</p>
-              </li>
-            ))}
-          </ul>
+            {/* Drawer Panel */}
+            <div className="fixed top-0 right-0 h-full w-64 bg-[#1c1c24] z-50 shadow-2xl px-6 py-8 transition-transform duration-500 translate-x-0">
+              <button
+                className="absolute top-6 right-6 text-white text-2xl"
+                onClick={() => setToggleDrawer(false)}
+              >
+                &times;
+              </button>
 
-          <div className="flex mx-4">
-            <CustomButton
-              btnType="button"
-              title={address ? "Create a campaign" : "Connect"}
-              styles={address ? "bg-[#1dc071]" : "bg-[#8c6dfd]"}
-              handleClick={() => {
-                if (address) handleLogout();
-                else handleConnect();
-              }}
-            />
-          </div>
-        </div>
+              <ul className="mb-8 mt-12 flex flex-col gap-6">
+                <li
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setToggleDrawer(false);
+                    navigate("/campaigns");
+                  }}
+                >
+                  <p className="font-epilogue font-semibold text-[18px] text-white">
+                    Campaign
+                  </p>
+                </li>
+                <li
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setToggleDrawer(false);
+                    navigate("/create-campaign");
+                  }}
+                >
+                  <p className="font-epilogue font-semibold text-[18px] text-white">
+                    Create Campaign
+                  </p>
+                </li>
+                <li
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setToggleDrawer(false);
+                    navigate("/dashboard");
+                  }}
+                >
+                  <p className="font-epilogue font-semibold text-[18px] text-white">
+                    Dashboard
+                  </p>
+                </li>
+              </ul>
+
+              <div className="flex justify-start">
+                <CustomButton
+                  btnType="button"
+                  title={address ? "Disconnect" : "Connect"}
+                  styles={address ? "bg-[#1dc071]" : "bg-[#8c6dfd]"}
+                  handleClick={() => {
+                    if (address) handleLogout();
+                    else handleConnect();
+                  }}
+                />
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </header>
   );
 };
-
 
 export default HeroNavbar;
