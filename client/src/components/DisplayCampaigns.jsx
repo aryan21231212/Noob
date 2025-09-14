@@ -12,7 +12,6 @@ const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
     navigate(`/campaign-details/${campaign.title}`, { state: campaign });
   };
 
-  // ✅ Filter campaigns by title or description
   const filteredCampaigns = campaigns.filter(
     (c) =>
       c.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -26,7 +25,6 @@ const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
           {title} ({filteredCampaigns.length})
         </h1>
 
-        {/* ✅ Search input with icon */}
         <div className="relative w-full max-w-[458px]">
           <input
             type="text"
@@ -36,7 +34,6 @@ const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
             className="w-full py-3 pl-12 pr-4 h-[52px] bg-[#1c1c24] rounded-full text-white font-medium focus:outline-none focus:ring-2 focus:ring-[#1dc071] shadow-md placeholder:text-[#818183] transition-all duration-200"
           />
           <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#1dc071]">
-            {/* Search Icon SVG */}
             <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <circle cx="11" cy="11" r="7" strokeWidth="2" stroke="currentColor" fill="none" />
               <line x1="16.5" y1="16.5" x2="21" y2="21" strokeWidth="2" stroke="currentColor" strokeLinecap="round" />
@@ -67,7 +64,13 @@ const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
               key={uuidv4()}
               {...campaign}
               handleClick={() => handleNavigate(campaign)}
-            />
+            >
+              {campaign.verified && (
+                <span className="ml-2 px-2 py-1 text-xs bg-yellow-500 text-black rounded-full">
+                  Verified
+                </span>
+              )}
+            </FundCard>
           ))}
       </div>
     </div>

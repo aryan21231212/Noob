@@ -5,96 +5,138 @@ import { ethers } from "ethers";
 const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
-  const { contract } = useContract("0xe7BcA3267Abe9Db6d4a841a5f7FB802bB0dcb50E");
+  const { contract } = useContract("0x64871FFb9ec7c2d38fF2c451FAF16e42e53F7289");
   const address = useAddress();
-  const { mutateAsync: createCampaign } = useContractWrite(
-    contract,
-    "createCampaign"
-  );
   const disconnectWallet = useDisconnect();
+  const { mutateAsync: createCampaign } = useContractWrite(contract, "createCampaign");
 
-  // publish campaign
+  // Publish a new campaign
   const publishCampaign = async (form) => {
     try {
-      if (!contract) throw new Error("Contract object is undefined");
+      if (!contract) throw new Error("Contract is not loaded");
       if (!address) throw new Error("Wallet not connected");
 
-      const data = await createCampaign({
+      await createCampaign({
         args: [
-          address, // owner → from wallet
+          address,
           form.title,
           form.description,
-          ethers.utils.parseEther(form.target.toString()), // target
+          ethers.utils.parseEther(form.target.toString()),
           new Date(form.deadline).getTime(),
           form.image,
         ],
       });
-
-      console.log("Contract call success", data);
     } catch (error) {
-      console.error("Contract call failure:", error);
+      console.error("Publish campaign error:", error);
+      throw error;
     }
   };
 
-  // get all campaigns
+  // Get all campaigns (map contract field names to frontend-friendly keys)
   const getCampaigns = async () => {
-    const campaigns = await contract.call("getCampaigns");
-
-    return campaigns.map((campaign, i) => ({
-      owner: campaign.owner,
-      title: campaign.title,
-      description: campaign.description,
-      target: ethers.utils.formatEther(campaign.target.toString()),
-      deadline: campaign.deadline.toNumber(),
-      amountCollected: ethers.utils.formatEther(
-        campaign.amountCollected.toString()
-      ),
-      image: campaign.image,
-      pId: i,
-    }));
-  };
-
-  // get campaigns by connected user
-  const getUserCampaigns = async () => {
-    const allCampaigns = await getCampaigns();
-    return allCampaigns.filter((campaign) => campaign.owner === address);
-  };
-
-  // donate to campaign
-  const donate = async (pId, amount) => {
-    const data = await contract.call("donateToCampaign", [pId], {
-      value: ethers.utils.parseEther(amount),
-    });
-    return data;
-  };
-
-  // get donations of a specific campaign
-  const getDonations = async (pId) => {
-    const donations = await contract.call("getDonators", [pId]);
-    return donations[0].map((donator, i) => ({
-      donator,
-      donation: ethers.utils.formatEther(donations[1][i].toString()),
-    }));
-  };
-
-  // ✅ get all donations made by current user
-  const getUserDonations = async () => {
-    const allCampaigns = await getCampaigns();
-    const userDonations = [];
-
-    for (let campaign of allCampaigns) {
-      const donations = await getDonations(campaign.pId);
-      donations.forEach((don) => {
-        if (don.donator.toLowerCase() === address?.toLowerCase()) {
-          userDonations.push({
-            ...campaign,
-            donatedAmount: don.donation,
-          });
-        }
-      });
+    if (!contract) return [];
+    try {
+      const campaigns = await contract.call("getCampaigns");
+      return campaigns.map((c, i) => ({
+        owner: c.owner,
+        title: c.title,
+        description: c.description,
+        target: ethers.utils.formatEther(c.target.toString()),
+        deadline: c.deadline.toNumber(),
+        amountCollected: ethers.utils.formatEther(c.amountCollected.toString()),
+        image: c.image,
+        pId: i,
+        // IMPORTANT: map solidity flag name to `verificationRequested` expected by frontend
+        verified: c.verified,
+        verificationRequested: c.verificationRequestedFlag,
+      }));
+    } catch (err) {
+      console.error("getCampaigns error:", err);
+      return [];
     }
+  };
 
-    return userDonations;
+  // Get campaigns created by the connected user (safe lowercase compare)
+  const getUserCampaigns = async () => {
+    const all = await getCampaigns();
+    if (!address) return [];
+    return all.filter((c) => c.owner?.toLowerCase() === address?.toLowerCase());
+  };
+
+  // Donate to a campaign
+  const donate = async (pId, amount) => {
+    if (!contract) throw new Error("Contract not loaded");
+    try {
+      return await contract.call("donateToCampaign", [pId], {
+        value: ethers.utils.parseEther(amount),
+      });
+    } catch (err) {
+      console.error("donate error:", err);
+      throw err;
+    }
+  };
+
+  // Get all donations of a specific campaign
+  const getDonations = async (pId) => {
+    if (!contract) return [];
+    try {
+      const donations = await contract.call("getDonators", [pId]);
+      // donations = [address[], uint256[]]
+      return donations[0].map((donator, i) => ({
+        donator,
+        donation: ethers.utils.formatEther(donations[1][i].toString()),
+      }));
+    } catch (err) {
+      console.error("getDonations error:", err);
+      return [];
+    }
+  };
+
+  // Get all donations made by the connected user (merge with campaign info)
+  const getUserDonations = async () => {
+    try {
+      const all = await getCampaigns();
+      const userDonations = [];
+      for (let campaign of all) {
+        const donations = await getDonations(campaign.pId);
+        donations.forEach((d) => {
+          if (d.donator?.toLowerCase() === address?.toLowerCase()) {
+            userDonations.push({
+              ...campaign,
+              donatedAmount: d.donation,
+            });
+          }
+        });
+      }
+      return userDonations;
+    } catch (err) {
+      console.error("getUserDonations error:", err);
+      return [];
+    }
+  };
+
+  // Request campaign verification
+  const requestVerification = async (pId) => {
+    if (!contract) throw new Error("Contract not loaded");
+    try {
+      return await contract.call("requestVerification", [pId]);
+    } catch (err) {
+      console.error("requestVerification error:", err);
+      throw err;
+    }
+  };
+
+  // Get top donors for a campaign (max 5)
+  const getTopDonors = async (pId) => {
+    try {
+      const donations = await getDonations(pId);
+      return donations
+        .sort((a, b) => parseFloat(b.donation) - parseFloat(a.donation))
+        .slice(0, 5);
+    } catch (err) {
+      console.error("getTopDonors error:", err);
+      return [];
+    }
   };
 
   return (
@@ -108,7 +150,9 @@ export const StateContextProvider = ({ children }) => {
         donate,
         getDonations,
         getUserDonations,
-        disconnectWallet, // Expose disconnectWallet for logout
+        requestVerification,
+        getTopDonors,
+        disconnectWallet,
       }}
     >
       {children}
