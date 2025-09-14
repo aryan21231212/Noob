@@ -1,8 +1,20 @@
-import brandLogo from "../assets/heartChainlogo.png";
 import FeaturesSection from "./FeatureSection";
 import { useVanta } from "../VantaBackground";
 import Testimonials from "./Testimonials";
 import Footer from "./Footer";
+import HeroNavbar from "../components/HeroNavbar";
+
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
+import { createThirdwebClient } from "thirdweb";
+
+import { useStateContext } from '../context';
+import { CustomButton } from '../components';
+import { logo, menu, search, thirdweb } from '../assets';
+import { navlinks } from '../constants';
+import Connectbutton from '../components/Connectbutton';
+
+const client = createThirdwebClient({ clientId : "07baf930ed674143787a0996a7bd15d7"});
 
 const HeroSection = () => {
   // Use the Vanta hook for the hero section
@@ -15,38 +27,47 @@ const HeroSection = () => {
     touchControls: true,
   });
 
+  const navigate = useNavigate();
+    const [isActive, setIsActive] = useState('dashboard');
+    const [toggleDrawer, setToggleDrawer] = useState(false);
+    const { disconnectWallet } = useStateContext();
+  
+    // 🔹 Added search state
+    const [searchQuery, setSearchQuery] = useState("");
+  
+    // 🔹 Using context
+    const { address, connectWallet, campaigns, setFilteredCampaigns } = useStateContext();
+  
+    const handleConnect = async () => {
+      try {
+        await connectWallet("injected");
+        console.log("Wallet connected:", address);
+      } catch (error) {
+        console.error("Error connecting wallet:", error);
+      }
+    };
+  
+      const handleLogout = () => {
+      disconnectWallet();
+      window.location.reload(); // Reset UI and address
+    };
+  
+    // 🔹 Live Search Handler
+    const handleSearch = (query) => {
+      setSearchQuery(query);
+      if (!query.trim()) {
+        setFilteredCampaigns(campaigns); // reset if empty
+        return;
+      }
+      const filtered = campaigns.filter((c) =>
+        c.title.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredCampaigns(filtered);
+      navigate("/"); // redirect to dashboard
+    };
+
   return (
     <>
-      {/* Header stays normal */}
-      <header className="flex justify-between items-center py-5 px-6 md:px-12 border-b border-gray-800/50 backdrop-blur-sm sticky top-0 z-20 bg-black/70 rounded-3xl">
-        <div className="flex items-center gap-3">
-          <img
-            src={brandLogo}
-            alt="HeartChain Logo"
-            className="h-14 w-auto"
-          />
-        </div>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
-          <a href="/profile" className="text-gray-400 hover:text-white transition-colors duration-300">Donate</a>
-          <a href="/about" className="text-gray-400 hover:text-white transition-colors duration-300">Why HeartChain</a>
-          <a href="/create-campaign" className="text-gray-400 hover:text-white transition-colors duration-300">Register</a>
-          <a href="https://github.com/aryan21231212/Noob" className="text-gray-400 hover:text-white transition-colors duration-300">documentation</a>
-        </nav>
-
-        {/* Action buttons */}
-        <div className="flex items-center space-x-4">
-          
-          {/* --- MODIFIED BUTTON --- */}
-          <a
-            href="/"
-            className="bg-white text-black px-5 py-2 rounded-full font-semibold text-sm transition-all duration-300 ease-in-out transform hover:bg-gray-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-white/20"
-          >
-            EXPLORE
-          </a>
-        </div>
-      </header>
 
       {/* Hero section with Vanta background */}
       <div

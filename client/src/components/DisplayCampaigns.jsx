@@ -20,7 +20,7 @@ const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4 mt-4">
         <h1 className="font-epilogue font-semibold text-[24px] text-white text-left">
           {title} ({filteredCampaigns.length})
         </h1>
