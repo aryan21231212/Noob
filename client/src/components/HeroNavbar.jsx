@@ -29,7 +29,10 @@ const HeroNavbar = () => {
   return (
   <header className="flex justify-between items-center py-5 px-6 md:px-12 border-b border-gray-800/50 backdrop-blur-sm sticky top-0 z-20 bg-black/70 rounded-3xl">
       <div className="flex items-center gap-3">
+        <Link to="/">
         <img src={brandLogo} alt="HeartChain Logo" className="h-14 w-auto" />
+        </Link>
+        
       </div>
       {/* Desktop Navigation: Only Dashboard and Create Campaign */}
       <nav className="hidden md:flex items-center space-x-8">
