@@ -6,6 +6,8 @@ import HeroNavbar from './components/HeroNavbar';
 import { CampaignDetails, CreateCampaign, Home, Profile } from './pages';
 import HeroSection from './pages/HeroSection';
 import Dashboard from './pages/Dashboard';
+import About from './components/About';
+import HowItWorks from './pages/HowItWorks';
 const App = () => {
   const location = useLocation();
 
@@ -29,6 +31,8 @@ const App = () => {
           <Route path="/" element={<HeroSection />} />
           <Route path="/campaigns" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/create-campaign" element={<CreateCampaign />} />
           <Route path="/campaign-details/:id" element={<CampaignDetails />} />
           <Route path="/dashboard" element={<Dashboard />} />
